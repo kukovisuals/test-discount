@@ -10,10 +10,16 @@
 	<script type="text/javascript">
 		const data = d3.dsv(",", "/products.csv", (data) => {
 				const newDescription = data.Description.split('-')[0].trim()
+				
+				const trailing = data['Discounted Price'].split('.')[1]
+				const noTrail = data['Discounted Price'].split('.')[0]
+				const widthTrail = data['Discounted Price']
+
+				const discountPrice = trailing == '00' ?  noTrail : widthTrail;
 				return {
 					item: newDescription,
 					price:  data['Current Price'].split('.')[0],
-					discount: data['Discounted Price'].split('.')[0]
+					discount:  discountPrice
 				}
 				
         	});
