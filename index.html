@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>d3 data</title>
+	<script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+		const data = d3.dsv(",", "/products.csv", (data) => {
+				const newDescription = data.Description.split('-')[0].trim()
+				return {
+					item: newDescription,
+					price:  data['Current Price'].split('.')[0],
+					discount: data['Discounted Price'].split('.')[0]
+				}
+				
+        	});
+
+		data.then(res => {
+			const stack = new Set()
+			let products = {}
+			res.map( d =>{
+				if(!stack.has(d.item)){
+					products[d.item] = []
+					products[d.item].push(d.price, d.discount)
+					stack.add(d.item)
+				}
+			})
+			console.log(JSON.stringify(products) ) 
+		})
+	</script>
+</body>
+</html>
