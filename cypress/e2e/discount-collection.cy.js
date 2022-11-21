@@ -1,4 +1,5 @@
 import {discount} from './data';
+import {priceObject} from './price';
 /*
     *********************************************
     * iframe pop up
@@ -49,7 +50,7 @@ const newSkus =[5304592629804,5297140596780,5304595480620,5327776809004,68413035
 
 
 const paginationHeight = 667
-const totalHeight = 5; //  *********** max 41
+const totalHeight = 41; //  *********** max 41
 
 function grabHrefCollection(){
 
@@ -144,29 +145,65 @@ describe(`Get more raw data to compare`, () => {
             const name = Cypress.$(el).data('pdptitle')
             const price = Cypress.$(el).data('pdpprice')
             // expect(name).to.eq(key)
-            if(discount[name]){
-                expect(price).to.eq(discount[name][0])
-            }else {
-                expect(price).to.eq(`${name} Not In Price Sheet`)
-            }
+            const productName = typePdp(name.toLowerCase());
+            console.log(productName, name)
+            // bounderies(price,productName)
         })
     })
      it(`:: get data the discount :: `, () => {
        
         cy.get(`.this_sale .eby-test673114`).each((el, index, list) => {
             const name = Cypress.$(el).data('pdptitle')
-            const price = Cypress.$(el).data('prodprice')
-            expect(name).to.eq(name)
-            if(discount[name]){
-                expect(price).to.eq(discount[name][1])
-            } else {
-                expect(price).to.eq(`${name} Not In Price Sheet`)
-            }
+            const price = Cypress.$(el).data('pdpprice')
+            // expect(name).to.eq(key)
+            const productName = typePdp(name.toLowerCase());
+            console.log(productName, name)
+            // saleBounderies(price,productName)
+
         })
     })
 });
 
+function typePdp(type){
+    if(type.includes('thong') ){
+        return 'thong'
+    } else if(type.includes('bralette')){
+        return 'bralette'
+    } else if(type.includes('bikini')){
+        return 'bikini'
+    } else if(type.includes('brief')){
+        return 'brief'
+    } else if(type.includes('brief')){
+        return 'brief'
+    } else if(type.includes('high cut')){
+        return 'highcut'
+    } else if(type.includes('highwaisted')){
+        return 'highwaisted'
+    } else if(type.includes('tank')){
+        return 'tank'
+    } else if(type.includes('blouse')){
+        return 'blouse'
+    } else if(type.includes('shorts')){
+        return 'shorts'
+    } else if(type.includes('pants')){
+        return 'pants'
+    } else if(type.includes('bodysuit')){
+        return 'bodysuit'
+    }
+}
 
+function bounderies(num,type){
+    const a = Math.floor( priceObject[type]['price'][0])
+    const b = Math.floor( priceObject[type]['price'][1])
+    const y = (num >= a && num <= b) 
+    return expect(true).to.eq(y)
+}
+function saleBounderies(num,type){
+    const a = Math.floor( priceObject[type]['sale'][0])
+    const b = Math.floor( priceObject[type]['sale'][1])
+    const y = (num >= a && num <= b) 
+    return expect(true).to.eq(y)
+}
 
 
 
