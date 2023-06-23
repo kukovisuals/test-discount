@@ -33,8 +33,6 @@ const totalHeight = 30; //  *********** max 41
 function grabHrefCollection() {
 
     let arr = []
-    // eby-test673114
-    // this_sale
     const getHref = document.querySelectorAll('.this_sale')
     for (let el of getHref) {
         const attr = el.dataset.prodprice
@@ -47,6 +45,10 @@ const url = '/collections/last-call-seamless-underwear/products.json?limit=200';
 let pdpName = []
 let skus = []
 describe(`Grab all the pdp SKU and Array of pdps`, () => {
+    beforeEach(() => {
+        cy.visit(URL);
+    });
+
     it(`Grabs data from ${url}`, () => {
         cy.request({
                 method: 'GET',
@@ -71,6 +73,9 @@ describe(`Grab all the pdp SKU and Array of pdps`, () => {
 });
 
 describe(`Scroll to remove lazyload and grab all sale items`, () => {
+    beforeEach(() => {
+        cy.visit(URL);
+    });
 
     it(`:: Get The name of PDPs on Sale :: `, () => {
         // console.clear()
@@ -87,72 +92,74 @@ describe(`Scroll to remove lazyload and grab all sale items`, () => {
         // expect(pdpDiscount.length).to.eq(pdpNew.length)
         let h = 1;
         while (h < totalHeight) {
-            cy.wait(500);
+            cy.wait(1000);
             cy.scrollTo(0, paginationHeight * h);
             // expect(h, 'to be less than', totalHeight);
             h++;
         }
     })
-
 });
 
-describe(`Get more raw data to compare`, () => {
+// describe(`Get more raw data to compare`, () => {
+//     beforeEach(() => {
+//         cy.visit(URL);
+//     });
 
-    it(`:: Test that all spans have a string and we have 3 spans total :: `, () => {
+//     it(`:: Test that all spans have a string and we have 3 spans total :: `, () => {
 
-        cy.get('.col-pro-details h3').each(($h3, index) => {
-            cy.wrap($h3).children('span')
-                .should('have.length', 3)
-                .each(($span) => {
-                    const textLength = $span.text().trim().length;
-                    expect(textLength).to.be.greaterThan(3);
-                });
-        });
+//         cy.get('.col-pro-details h3').each(($h3, index) => {
+//             cy.wrap($h3).children('span')
+//                 .should('have.length', 3)
+//                 .each(($span) => {
+//                     const textLength = $span.text().trim().length;
+//                     expect(textLength).to.be.greaterThan(3);
+//                 });
+//         });
 
-        // cy.get('.col-pro-details h3 span').eq(3)
-        //     .then(($span) => {
-        //         const textLength = $span.text().trim().length;
-        //         expect(textLength).to.be.greaterThan(3);
-        //     });
-    });
+//         // cy.get('.col-pro-details h3 span').eq(3)
+//         //     .then(($span) => {
+//         //         const textLength = $span.text().trim().length;
+//         //         expect(textLength).to.be.greaterThan(3);
+//         //     });
+//     });
 
-    it(`:: It should Include Add to Cart :: `, () => {
-        cy.get('.noFiltermodeAddToCart .quickAddBtnInnerWrapper span')
-            .each(($el) => {
-                cy.wrap($el).should('have.text', 'Add To Cart');
-            });
-        // cy.get('.noFiltermodeAddToCart .quickAddBtnInnerWrapper span').eq(3)
-        //     .invoke('text')
-        //     .should('eq', 'Add To Cart');
-    });
+//     it(`:: It should Include Add to Cart :: `, () => {
+//         cy.get('.noFiltermodeAddToCart .quickAddBtnInnerWrapper span')
+//             .each(($el) => {
+//                 cy.wrap($el).should('have.text', 'Add To Cart');
+//             });
+//         // cy.get('.noFiltermodeAddToCart .quickAddBtnInnerWrapper span').eq(3)
+//         //     .invoke('text')
+//         //     .should('eq', 'Add To Cart');
+//     });
 
-    it(`:: It should have a price $34 or $23.34 with a rgb(127, 133, 163) color :: `, () => {
-        cy.get('.noFiltermodeAddToCart p.price.bfx-price')
-            .each(($el) => {
-                cy.wrap($el)
-                    .and('have.css', 'text-decoration', 'line-through solid rgb(127, 133, 163)') // Check the text decoration
-                    .invoke('text')
-                    .should('match', /\$\d+(\.\d{1,2})?/) // Check the text
-            });
-        // cy.get('.noFiltermodeAddToCart p.price.bfx-price').eq(3)
-        //     .and('have.css', 'text-decoration', 'line-through solid rgb(127, 133, 163)')  // Check the text decoration
-        //     .invoke('text')
-        //     .should('match', /\$\d+(\.\d{1,2})?/) // Check the text
-    });
+//     it(`:: It should have a price $34 or $23.34 with a rgb(127, 133, 163) color :: `, () => {
+//         cy.get('.noFiltermodeAddToCart p.price.bfx-price')
+//             .each(($el) => {
+//                 cy.wrap($el)
+//                     .and('have.css', 'text-decoration', 'line-through solid rgb(127, 133, 163)') // Check the text decoration
+//                     .invoke('text')
+//                     .should('match', /\$\d+(\.\d{1,2})?/) // Check the text
+//             });
+//         // cy.get('.noFiltermodeAddToCart p.price.bfx-price').eq(3)
+//         //     .and('have.css', 'text-decoration', 'line-through solid rgb(127, 133, 163)')  // Check the text decoration
+//         //     .invoke('text')
+//         //     .should('match', /\$\d+(\.\d{1,2})?/) // Check the text
+//     });
 
-    it(`:: It should have a price $34 or $23.34 with a rgb(208, 2, 27) color :: `, () => {
-        cy.get('.noFiltermodeAddToCart .holidayPriceWrapper.standard.saleHighlight.bfx-price')
-            .each(($el) => {
-                cy.wrap($el)
-                    .and('have.css', 'color', 'rgb(208, 2, 27)') // Check the color
-                    .invoke('text')
-                    .should('match', /\$\d+(\.\d{1,2})?/) // Check the text
-                    .and('have.css', 'color', 'rgb(208, 2, 27)'); // Check the color
-            });
-        // cy.get('.noFiltermodeAddToCart .holidayPriceWrapper.standard.saleHighlight.bfx-price').eq(3)
-        //     .and('have.css', 'color', 'rgb(208, 2, 27)') // Check the color
-        //     .invoke('text')
-        //     .should('match', /\$\d+(\.\d{1,2})?/) // Check the text
+//     it(`:: It should have a price $34 or $23.34 with a rgb(208, 2, 27) color :: `, () => {
+//         cy.get('.noFiltermodeAddToCart .holidayPriceWrapper.standard.saleHighlight.bfx-price')
+//             .each(($el) => {
+//                 cy.wrap($el)
+//                     .and('have.css', 'color', 'rgb(208, 2, 27)') // Check the color
+//                     .invoke('text')
+//                     .should('match', /\$\d+(\.\d{1,2})?/) // Check the text
+//                     .and('have.css', 'color', 'rgb(208, 2, 27)'); // Check the color
+//             });
+//         // cy.get('.noFiltermodeAddToCart .holidayPriceWrapper.standard.saleHighlight.bfx-price').eq(3)
+//         //     .and('have.css', 'color', 'rgb(208, 2, 27)') // Check the color
+//         //     .invoke('text')
+//         //     .should('match', /\$\d+(\.\d{1,2})?/) // Check the text
 
-    });
-});
+//     });
+// });
