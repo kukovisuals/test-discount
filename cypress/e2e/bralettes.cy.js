@@ -12,12 +12,12 @@
     ************************************
 */
 
-const currentPage = '/collections/best-sellers'
+const currentPage = '/collections/bralettes-for-women'
 
 describe(`Test prices match on collection and side cart`, () => {
     it(`prices matches`, () => {
         
-        for(let index = 0; index <10; index++){
+        for(let index = 0; index < 8; index++){
 
             cy.visit(currentPage);
             cy.wait(500);

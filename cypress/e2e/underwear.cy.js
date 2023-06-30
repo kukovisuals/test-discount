@@ -7,50 +7,90 @@
         `-.-' \ )-`( , o o)
               `-    \`_`"'-
     open cypress -> npx cypress open
-    report ---> npx cypress run --reporter mochawesome
+    report ---> npx cypress run --reporter mochawesome 
+    npx cypress run --spec "cypress/e2e/underwear.cy.js
     ************************************
 */
 
 const currentPage = '/collections/seamless-underwear'
 
-describe(`Test on Last Call` ,() => {
-    it(`The price should be the same on the product page`,() => {
+describe(`Test prices match on collection and side cart`, () => {
+    it(`prices matches`, () => {
         
-        for(let index = 28; index < 40; index++){
-        
-            cy.visit(currentPage);
+        for(let index = 61; index < 69; index++){
 
-            // Array of products grab price
-            cy.get('.noFiltermodeAddToCart .price.bfx-price').eq(index)
+            cy.visit(currentPage);
+            cy.wait(500);
+            cy.get('.tileFilterable.this_sale').eq(index)
+                .find('.quick_btn.noFiltermodeAddToCart .prodTilePriceWrapper p.price.bfx-price')
+                .first()
                 .invoke('text')
                 .as('productPrice')
-
-            // Array of products grab sale price
-            cy.get('.noFiltermodeAddToCart .ebyProdTile-vipPriceWrapper .bfx-price').eq(index)
+            
+            cy.get('.tileFilterable.this_sale').eq(index)
+                .find('.quick_btn.noFiltermodeAddToCart .prodTilePriceWrapper .holidayPriceWrapper.saleHighlight')
+                .first()
                 .invoke('text')
-                .as('productSalePrice')
-
-        
+                .as('salePrice')
+    
             // Go to the product page of item and make sure the price and sale price matches
-            cy.get(`.proFeaturedImage`).eq(index)
-                .invoke('attr', 'href')
-                .then( function(uri){
+            cy.get(`.tileFilterable.this_sale a.proFeaturedImage`).eq(index)
+            .invoke('attr', 'href')
+            .then( function(uri){
+    
+                console.log(uri, this)
+                const productPrice = this.productPrice; // Store the productPrice in a variable
+                const salePrice = this.salePrice; // Store the productPrice in a variable
+                
+                cy.visit(uri);
+                cy.get('.mobile-intro .nrml-price23')
+                    .should('have.text', productPrice); // Use the productPrice alias
 
-                    console.log(uri, this)
-                    const productPrice = this.productPrice; // Store the productPrice in a variable
-                    const productSalePrice = this.productSalePrice; // Store the productPrice in a variable
-                    
-                    cy.visit(uri);
-                    cy.get('.mobile-intro .nrml-price23')
-                        .should('have.text', productPrice); // Use the productPrice alias
-
-                    cy.get('#eby-subVipMobile-price')
-                        .should('have.text', productSalePrice); // Use the productPrice alias
-                });
+                cy.get('#eby-dealSale-23')
+                    .should('have.text', salePrice); // Use the productPrice alias
+            });
         }
-          
     })
 })
+
+// describe(`Test on Last Call` ,() => {
+//     it(`The price should be the same on the product page`,() => {
+        
+//         for(let index = 0; index < 40; index++){
+        
+//             cy.visit(currentPage);
+//             cy.wait(500);
+//             // Array of products grab price
+//             cy.get('.noFiltermodeAddToCart .price.bfx-price').eq(index)
+//                 .invoke('text')
+//                 .as('productPrice')
+
+//             // Array of products grab sale price
+//             cy.get('.noFiltermodeAddToCart .ebyProdTile-vipPriceWrapper .bfx-price').eq(index)
+//                 .invoke('text')
+//                 .as('productSalePrice')
+
+        
+//             // Go to the product page of item and make sure the price and sale price matches
+//             cy.get(`.proFeaturedImage`).eq(index)
+//                 .invoke('attr', 'href')
+//                 .then( function(uri){
+
+//                     console.log(uri, this)
+//                     const productPrice = this.productPrice; // Store the productPrice in a variable
+//                     const productSalePrice = this.productSalePrice; // Store the productPrice in a variable
+                    
+//                     cy.visit(uri);
+//                     cy.get('.mobile-intro .nrml-price23')
+//                         .should('have.text', productPrice); // Use the productPrice alias
+
+//                     cy.get('#eby-subVipMobile-price')
+//                         .should('have.text', productSalePrice); // Use the productPrice alias
+//                 });
+//         }
+          
+//     })
+// })
 // describe(`Get more raw data to compare`, () => {
 //     beforeEach(() => {
 //         cy.visit(URL);
